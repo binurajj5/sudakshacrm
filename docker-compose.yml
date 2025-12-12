@@ -1,0 +1,20 @@
+﻿version: "3.8"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: sudcrm
+      POSTGRES_PASSWORD: sudcrm_pass
+      POSTGRES_DB: sudcrm_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+volumes:
+  db_data:
