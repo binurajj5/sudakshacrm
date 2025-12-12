@@ -1,18 +1,24 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "./prisma.service";
 
 @Injectable()
 export class ClientsService {
-  private prisma = new PrismaClient();
+  constructor(private readonly prisma: PrismaService) {}
 
   async getAllClients() {
     return this.prisma.client.findMany();
   }
 
   async getClient(id: string) {
-    return this.prisma.client.findUnique({
+    const client = await this.prisma.client.findUnique({
       where: { id },
     });
+
+    if (!client) {
+      throw new NotFoundException(`Client with ID ${id} not found`);
+    }
+
+    return client;
   }
 
   async createClient(data: { name: string; email: string; aiModel?: string }) {
