@@ -12,3 +12,12 @@ model User {
   email String @unique
   name  String?
 }
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  aiModel   String   @default("claude-haiku-4.5")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
