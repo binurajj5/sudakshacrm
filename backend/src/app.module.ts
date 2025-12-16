@@ -6,9 +6,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './modules/prisma/prisma.module';
-// Auth and Users modules will be enabled in Step 2
-// import { AuthModule } from './modules/auth/auth.module';
-// import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -23,8 +22,8 @@ import { PrismaModule } from './modules/prisma/prisma.module';
       ttl: 300,
     }),
     PrismaModule,
-    // AuthModule,    // Enable in Step 2
-    // UsersModule,   // Enable in Step 2
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
