@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     try {
       await login({ email, password });
-    } catch (error) {
+    } catch {
       // Error is handled in auth context with toast
     } finally {
       setLoading(false);
@@ -80,7 +80,7 @@ export default function LoginPage() {
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/auth/register" className="text-primary hover:underline">
                 Sign up
               </Link>

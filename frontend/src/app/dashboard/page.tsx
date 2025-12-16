@@ -59,7 +59,7 @@ function DashboardContent() {
             Welcome back, {user?.firstName}! 👋
           </h2>
           <p className="text-muted-foreground">
-            Here's what's happening with your CRM today.
+            Here&apos;s what&apos;s happening with your CRM today.
           </p>
         </div>
 

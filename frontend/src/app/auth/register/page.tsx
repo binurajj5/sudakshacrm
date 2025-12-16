@@ -58,7 +58,7 @@ export default function RegisterPage() {
 
     try {
       await register(formData);
-    } catch (error) {
+    } catch {
       // Error is handled in auth context with toast
     } finally {
       setLoading(false);

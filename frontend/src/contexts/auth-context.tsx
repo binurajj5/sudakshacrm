@@ -64,8 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       
       router.push('/dashboard');
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed';
+    } catch (error) {
+      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Login failed';
       toast({
         title: 'Error',
         description: message,
@@ -92,8 +92,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       
       router.push('/dashboard');
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Registration failed';
+    } catch (error) {
+      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Registration failed';
       toast({
         title: 'Error',
         description: message,
