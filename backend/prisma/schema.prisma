@@ -1,6 +1,3 @@
-// Prisma Schema for Sudaksha Smart CRM
-// Database:  PostgreSQL
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +7,128 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// USER MANAGEMENT & AUTHENTICATION
-// ============================================
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  password         String
+  firstName        String
+  lastName         String
+  phone            String?
+  avatar           String?
+  role             Role           @default(USER)
+  status           UserStatus     @default(ACTIVE)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  deletedAt        DateTime?
+  activities       Activity[]     @relation("ActivityCreatedBy")
+  auditLogs        AuditLog[]
+  createdCompanies Company[]      @relation("CompanyCreatedBy")
+  createdContacts  Contact[]      @relation("CreatedBy")
+  createdDeals     Deal[]         @relation("DealCreatedBy")
+  refreshTokens    RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Contact {
+  id          String        @id @default(uuid())
+  type        ContactType
+  status      ContactStatus @default(LEAD)
+  firstName   String
+  lastName    String
+  email       String        @unique
+  phone       String?
+  companyId   String?
+  createdById String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  activities  Activity[]
+  company     Company?      @relation(fields: [companyId], references: [id])
+  createdBy   User          @relation("CreatedBy", fields: [createdById], references: [id])
+  deals       Deal[]
+
+  @@map("contacts")
+}
+
+model Company {
+  id          String      @id @default(uuid())
+  name        String
+  type        CompanyType
+  website     String?
+  industry    String?
+  createdById String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  createdBy   User        @relation("CompanyCreatedBy", fields: [createdById], references: [id])
+  contacts    Contact[]
+  deals       Deal[]
+
+  @@map("companies")
+}
+
+model Deal {
+  id          String     @id @default(uuid())
+  title       String
+  amount      Float
+  stage       DealStage  @default(PROSPECTING)
+  contactId   String
+  companyId   String?
+  createdById String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+  activities  Activity[]
+  company     Company?   @relation(fields: [companyId], references: [id])
+  contact     Contact    @relation(fields: [contactId], references: [id])
+  createdBy   User       @relation("DealCreatedBy", fields: [createdById], references: [id])
+
+  @@map("deals")
+}
+
+model Activity {
+  id          String       @id @default(uuid())
+  type        ActivityType
+  title       String
+  description String?
+  contactId   String?
+  dealId      String?
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  contact     Contact?     @relation(fields: [contactId], references: [id])
+  createdBy   User         @relation("ActivityCreatedBy", fields: [createdById], references: [id])
+  deal        Deal?        @relation(fields: [dealId], references: [id])
+
+  @@map("activities")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  entity    String
+  entityId  String
+  changes   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
 
 enum Role {
   ADMIN
@@ -28,49 +144,6 @@ enum UserStatus {
   SUSPENDED
 }
 
-model User {
-  id        String      @id @default(uuid())
-  email     String      @unique
-  password  String
-  firstName String
-  lastName  String
-  phone     String? 
-  avatar    String?
-  role      Role        @default(USER)
-  status    UserStatus  @default(ACTIVE)
-  
-  // Timestamps
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  deletedAt DateTime?
-  
-  // Relations
-  refreshTokens RefreshToken[]
-  createdContacts Contact[] @relation("CreatedBy")
-  createdCompanies Company[] @relation("CompanyCreatedBy")
-  createdDeals Deal[] @relation("DealCreatedBy")
-  activities Activity[] @relation("ActivityCreatedBy")
-  auditLogs AuditLog[]
-  
-  @@map("users")
-}
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  
-  user User @relation(fields: [userId], references: [id], onDelete:  Cascade)
-  
-  @@map("refresh_tokens")
-}
-
-// ============================================
-// CRM CORE ENTITIES (Placeholders for Step 3)
-// ============================================
-
 enum ContactType {
   STUDENT
   CORPORATE
@@ -85,57 +158,11 @@ enum ContactStatus {
   INACTIVE
 }
 
-model Contact {
-  id          String        @id @default(uuid())
-  type        ContactType
-  status      ContactStatus @default(LEAD)
-  firstName   String
-  lastName    String
-  email       String        @unique
-  phone       String?
-  companyId   String?
-  
-  // Metadata
-  createdById String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime?
-  
-  // Relations
-  createdBy   User          @relation("CreatedBy", fields: [createdById], references: [id])
-  company     Company?      @relation(fields:  [companyId], references: [id])
-  deals       Deal[]
-  activities  Activity[]
-  
-  @@map("contacts")
-}
-
 enum CompanyType {
   ENTERPRISE
   SMB
   STARTUP
   EDUCATION
-}
-
-model Company {
-  id          String      @id @default(uuid())
-  name        String
-  type        CompanyType
-  website     String?
-  industry    String?
-  
-  // Metadata
-  createdById String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  deletedAt   DateTime?
-  
-  // Relations
-  createdBy   User        @relation("CompanyCreatedBy", fields: [createdById], references: [id])
-  contacts    Contact[]
-  deals       Deal[]
-  
-  @@map("companies")
 }
 
 enum DealStage {
@@ -147,74 +174,10 @@ enum DealStage {
   CLOSED_LOST
 }
 
-model Deal {
-  id          String    @id @default(uuid())
-  title       String
-  amount      Float
-  stage       DealStage @default(PROSPECTING)
-  contactId   String
-  companyId   String?
-  
-  // Metadata
-  createdById String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  
-  // Relations
-  createdBy   User      @relation("DealCreatedBy", fields: [createdById], references: [id])
-  contact     Contact   @relation(fields: [contactId], references:  [id])
-  company     Company?  @relation(fields: [companyId], references: [id])
-  activities  Activity[]
-  
-  @@map("deals")
-}
-
-// ============================================
-// ACTIVITIES & AUDIT
-// ============================================
-
 enum ActivityType {
   NOTE
   CALL
   EMAIL
   MEETING
   TASK
-}
-
-model Activity {
-  id          String       @id @default(uuid())
-  type        ActivityType
-  title       String
-  description String?
-  contactId   String?
-  dealId      String?
-  
-  // Metadata
-  createdById String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  
-  // Relations
-  createdBy   User         @relation("ActivityCreatedBy", fields: [createdById], references: [id])
-  contact     Contact?     @relation(fields:  [contactId], references: [id])
-  deal        Deal?        @relation(fields: [dealId], references: [id])
-  
-  @@map("activities")
-}
-
-model AuditLog {
-  id         String   @id @default(uuid())
-  userId     String
-  action     String
-  entity     String
-  entityId   String
-  changes    Json?
-  ipAddress  String? 
-  userAgent  String? 
-  createdAt  DateTime @default(now())
-  
-  user User @relation(fields: [userId], references: [id])
-  
-  @@map("audit_logs")
 }

@@ -6,8 +6,8 @@ import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RolesGuard } from './guards/roles.guard';
+import { JwtAuthGuard } from './gaurds/jwt-auth.guard';
+import { RolesGuard } from './gaurds/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
