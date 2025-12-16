@@ -11,6 +11,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ContactsModule } from './modules/contacts/contacts.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { DealsModule } from './modules/deals/deals.module';
+import { ActivitiesModule } from './modules/activities/activities.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { DealsModule } from './modules/deals/deals.module';
     ContactsModule,
     CompaniesModule,
     DealsModule,
+    ActivitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

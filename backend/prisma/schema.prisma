@@ -72,6 +72,7 @@ model Company {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
+  activities  Activity[]
   createdBy   User        @relation("CompanyCreatedBy", fields: [createdById], references: [id])
   contacts    Contact[]
   deals       Deal[]
@@ -101,14 +102,20 @@ model Deal {
 model Activity {
   id          String       @id @default(uuid())
   type        ActivityType
-  title       String
+  subject     String
   description String?
+  scheduledAt DateTime?
+  completed   Boolean      @default(false)
+  completedAt DateTime?
   contactId   String?
+  companyId   String?
   dealId      String?
   createdById String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
   contact     Contact?     @relation(fields: [contactId], references: [id])
+  company     Company?     @relation(fields: [companyId], references: [id])
   createdBy   User         @relation("ActivityCreatedBy", fields: [createdById], references: [id])
   deal        Deal?        @relation(fields: [dealId], references: [id])
 
