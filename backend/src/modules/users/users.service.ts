@@ -4,14 +4,18 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryUsersDto } from './dto/query-users.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { EmailService } from './email.service';
 import * as bcrypt from 'bcrypt';
 import { User, Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
-  async create(createUserDto: CreateUserDto, currentUser: User): Promise<UserResponseDto> {
+  async create(createUserDto: CreateUserDto, currentUser: User): Promise<UserResponseDto & { emailSent?: boolean; emailPreviewUrl?: string }> {
     if (currentUser.role !== Role.ADMIN) {
       throw new ForbiddenException('Only admins can create users');
     }
@@ -24,17 +28,31 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    // Store the plain password temporarily to send in email
+    const plainPassword = createUserDto.password;
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
     const user = await this.prisma.user.create({
       data: {
-        ... createUserDto,
-        password:  hashedPassword,
+        ...createUserDto,
+        password: hashedPassword,
+        isEmailVerified: false,
       },
     });
 
+    // Send welcome email with credentials
+    const emailResult = await this.emailService.sendWelcomeEmail(
+      user.email,
+      user.firstName,
+      plainPassword,
+    );
+
     const { password, ...result } = user;
-    return result as UserResponseDto;
+    return {
+      ...result as UserResponseDto,
+      emailSent: emailResult.success,
+      emailPreviewUrl: emailResult.previewUrl,
+    };
   }
 
   async findAll(query: QueryUsersDto): Promise<{ data: UserResponseDto[]; total:  number; page: number; limit: number }> {
