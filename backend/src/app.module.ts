@@ -13,6 +13,7 @@ import { CompaniesModule } from './modules/companies/companies.module';
 import { DealsModule } from './modules/deals/deals.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
     DealsModule,
     ActivitiesModule,
     AuditLogsModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
