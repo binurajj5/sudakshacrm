@@ -4,8 +4,8 @@
 
 **Active Branch:** `feature/scaffold-sudcrm`  
 **Current Phase:** PHASE 1 – Backend Foundation  
-**Current Step:** Step 3 - Core CRM Entities (✅ COMPLETE)  
-**Last Updated:** 2025-12-16T11:16:00Z
+**Current Step:** Step 4 - Activities & Timeline (✅ COMPLETE)  
+**Last Updated:** 2025-12-16T11:26:00Z
 
 ---
 
@@ -39,14 +39,14 @@
 
 ---
 
-## 🎯 Next Immediate Steps (Step 4: Activities & Timeline)
+## 🎯 Next Immediate Steps (Step 5: Audit Logs & Permissions)
 
-1. Create Activities module (NOTE, CALL, EMAIL, MEETING, TASK)
-2. Link activities to contacts and deals
-3. Create timeline view for activities
-4. Add activity filtering by type, date, entity
-5. Implement activity notifications
-6. Create audit log tracking for all entities
+1. Implement comprehensive audit logging for all entities
+2. Track user actions and data modifications
+3. Store before/after states for updates
+4. Add audit log querying and filtering
+5. Implement advanced RBAC permissions
+6. Add field-level permissions for sensitive data
 
 ---
 
@@ -74,7 +74,16 @@
 - [x] Prisma schema for CRM entities with relationships
 - [x] Complete CRUD + filtering + pagination for all entities
 
-### Step 4: Activities & Timeline (PENDING)
+### Step 4: Activities & Timeline ✅ (COMPLETE)
+- [x] Activities module (types: NOTE, CALL, EMAIL, MEETING, TASK)
+- [x] Link activities to contacts, companies, and deals
+- [x] Timeline endpoints for each entity type
+- [x] Activity scheduling and completion tracking
+- [x] Activity filtering by type, date, entity, completion status
+- [x] Updated Prisma schema with Activity model (subject, scheduledAt, completed)
+- [x] Database migration applied successfully
+
+### Step 5: Audit Logs & Permissions (PENDING)
 - Activities module
 - Timeline tracking
 - Activity types
