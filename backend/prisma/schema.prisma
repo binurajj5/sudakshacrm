@@ -26,6 +26,7 @@ model User {
   createdContacts  Contact[]      @relation("CreatedBy")
   createdDeals     Deal[]         @relation("DealCreatedBy")
   refreshTokens    RefreshToken[]
+  createdCourses   Course[]       @relation("CourseCreatedBy")
 
   @@map("users")
 }
@@ -187,4 +188,117 @@ enum ActivityType {
   EMAIL
   MEETING
   TASK
+}
+
+// Course Management Models
+model Course {
+  id               String          @id @default(uuid())
+  name             String
+  code             String          @unique
+  description      String?
+  category         CourseCategory
+  duration         Int
+  level            CourseLevel
+  version          String          @default("1.0")
+  status           CourseStatus    @default(DRAFT)
+  isTemplate       Boolean         @default(false)
+  lmsIdentifier    String?
+  thumbnailUrl     String?
+  syllabusPdfUrl   String?
+  marketingContent String?
+  price            Float?
+  clonedFromId     String?
+  createdById      String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
+  clonedFrom       Course?         @relation("CourseClones", fields: [clonedFromId], references: [id])
+  clones           Course[]        @relation("CourseClones")
+  createdBy        User            @relation("CourseCreatedBy", fields: [createdById], references: [id])
+  topics           CourseTopic[]
+
+  @@map("courses")
+}
+
+model CourseTopic {
+  id             String          @id @default(uuid())
+  courseId       String
+  title          String
+  description    String?
+  orderIndex     Int
+  estimatedHours Int?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  course         Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  modules        CourseModule[]
+
+  @@map("course_topics")
+}
+
+model CourseModule {
+  id             String          @id @default(uuid())
+  topicId        String
+  title          String
+  description    String?
+  orderIndex     Int
+  estimatedHours Int?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  topic          CourseTopic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  lessons        CourseLesson[]
+
+  @@map("course_modules")
+}
+
+model CourseLesson {
+  id              String             @id @default(uuid())
+  moduleId        String
+  title           String
+  description     String?
+  contentType     LessonContentType
+  contentUrl      String?
+  orderIndex      Int
+  durationMinutes Int?
+  isFree          Boolean            @default(false)
+  lmsIdentifier   String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  module          CourseModule       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@map("course_lessons")
+}
+
+enum CourseCategory {
+  TECHNICAL
+  BUSINESS
+  DATA_SCIENCE
+  DESIGN
+  MARKETING
+  MANAGEMENT
+  CLOUD_COMPUTING
+  CYBERSECURITY
+  OTHER
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  INACTIVE
+}
+
+enum LessonContentType {
+  VIDEO
+  TEXT
+  PDF
+  AUDIO
+  INTERACTIVE
+  EXTERNAL_LINK
 }
