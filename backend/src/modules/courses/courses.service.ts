@@ -80,7 +80,6 @@ export class CoursesService {
           _count: {
             select: {
               topics: true,
-              enrollments: true,
             },
           },
         },
@@ -120,9 +119,6 @@ export class CoursesService {
                 lessons: {
                   orderBy: { orderIndex: 'asc' },
                 },
-                learningAssets: {
-                  orderBy: { orderIndex: 'asc' },
-                },
               },
             },
           },
@@ -130,7 +126,6 @@ export class CoursesService {
         _count: {
           select: {
             topics: true,
-            enrollments: true,
           },
         },
       },
@@ -255,7 +250,6 @@ export class CoursesService {
             modules: {
               include: {
                 lessons: true,
-                learningAssets: true,
               },
             },
           },
@@ -267,7 +261,7 @@ export class CoursesService {
   }
 
   /**
-   * Prepare topics for cloning with nested modules, lessons, and assets
+   * Prepare topics for cloning with nested modules and lessons
    */
   private async prepareTopicsForCloning(
     topics: any[],
@@ -304,20 +298,6 @@ export class CoursesService {
                   durationMinutes: lesson.durationMinutes,
                   isFree: lesson.isFree,
                   lmsIdentifier: lesson.lmsIdentifier,
-                })),
-              };
-            }
-
-            if (includeAssets && module.learningAssets) {
-              moduleData.learningAssets = {
-                create: module.learningAssets.map((asset: any) => ({
-                  title: asset.title,
-                  description: asset.description,
-                  assetType: asset.assetType,
-                  orderIndex: asset.orderIndex,
-                  estimatedMinutes: asset.estimatedMinutes,
-                  resourceUrl: asset.resourceUrl,
-                  lmsIdentifier: asset.lmsIdentifier,
                 })),
               };
             }
