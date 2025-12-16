@@ -20,7 +20,7 @@ export class EmailService {
       
       if (smtpHost && smtpUser) {
         // Use real SMTP
-        this.transporter = nodemailer.createTransporter({
+        this.transporter = nodemailer.createTransport({
           host: smtpHost,
           port: this.configService.get('SMTP_PORT', 587),
           secure: this.configService.get('SMTP_SECURE', false),
@@ -32,7 +32,7 @@ export class EmailService {
       } else {
         // Use ethereal email for testing
         const testAccount = await nodemailer.createTestAccount();
-        this.transporter = nodemailer.createTransporter({
+        this.transporter = nodemailer.createTransport({
           host: 'smtp.ethereal.email',
           port: 587,
           secure: false,
