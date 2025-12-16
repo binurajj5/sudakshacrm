@@ -1,16 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { QueryActivitiesDto } from './dto/query-activities.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '@prisma/client';
+import { AuditInterceptor, AuditLog } from '../../common/interceptors';
 
 @Controller('activities')
+@UseInterceptors(AuditInterceptor)
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
   @Post()
+  @AuditLog({ entityType: 'Activity', action: 'CREATE' })
   create(@Body() createActivityDto: CreateActivityDto, @CurrentUser() user: User) {
     return this.activitiesService.create(createActivityDto, user);
   }
@@ -40,12 +43,13 @@ export class ActivitiesController {
     return this.activitiesService.findOne(id, user);
   }
 
-  @Patch(':id')
+  @AuditLog({ entityType: 'Activity', action: 'UPDATE' })
   update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto, @CurrentUser() user: User) {
     return this.activitiesService.update(id, updateActivityDto, user);
   }
 
   @Delete(':id')
+  @AuditLog({ entityType: 'Activity', action: 'DELETE' })
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.activitiesService.remove(id, user);
   }
