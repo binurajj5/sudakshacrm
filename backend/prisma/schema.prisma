@@ -31,6 +31,7 @@ model User {
   auditLogs        AuditLog[]
   createdCompanies Company[]      @relation("CompanyCreatedBy")
   createdContacts  Contact[]      @relation("CreatedBy")
+  createdCourses   Course[]       @relation("CourseCreatedBy")
   createdDeals     Deal[]         @relation("DealCreatedBy")
   refreshTokens    RefreshToken[]
 
@@ -194,4 +195,47 @@ enum ActivityType {
   EMAIL
   MEETING
   TASK
+}
+
+enum CourseCategory {
+  TECHNICAL
+  BUSINESS
+  SOFT_SKILLS
+  MANAGEMENT
+  CLOUD_COMPUTING
+  CYBERSECURITY
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  INACTIVE
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model Course {
+  id          String         @id @default(uuid())
+  name        String
+  code        String         @unique
+  description String?
+  category    CourseCategory
+  duration    Int
+  level       CourseLevel
+  status      CourseStatus   @default(DRAFT)
+  price       Float?
+  version     String         @default("1.0")
+  isTemplate  Boolean        @default(false)
+  clonedFromId String?
+  createdById String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdBy   User           @relation("CourseCreatedBy", fields: [createdById], references: [id])
+
+  @@map("courses")
 }
