@@ -4,8 +4,8 @@
 
 **Active Branch:** `feature/scaffold-sudcrm`  
 **Current Phase:** PHASE 1 – Backend Foundation  
-**Current Step:** Step 1 - NestJS Foundation (✅ COMPLETE)  
-**Last Updated:** 2025-12-16T11:05:00Z
+**Current Step:** Step 3 - Core CRM Entities (✅ COMPLETE)  
+**Last Updated:** 2025-12-16T11:16:00Z
 
 ---
 
@@ -39,14 +39,14 @@
 
 ---
 
-## 🎯 Next Immediate Steps (Step 2: Auth & Users)
+## 🎯 Next Immediate Steps (Step 4: Activities & Timeline)
 
-1. Complete Prisma schema for User model
-2. Run Prisma migrations
-3. Fix Auth module implementation (JWT strategies)
-4. Fix Users module implementation (CRUD operations)
-5. Enable AuthModule and UsersModule in app.module.ts
-6. Test authentication flow (register, login, refresh token)
+1. Create Activities module (NOTE, CALL, EMAIL, MEETING, TASK)
+2. Link activities to contacts and deals
+3. Create timeline view for activities
+4. Add activity filtering by type, date, entity
+5. Implement activity notifications
+6. Create audit log tracking for all entities
 
 ---
 
@@ -58,18 +58,21 @@
 - Docker configuration
 - Health check endpoint
 
-### Step 2: Auth & Users (PENDING)
-- JWT authentication
-- RBAC (Role-Based Access Control)
-- User module
-- Auth module
-- Prisma schema for users
+### Step 2: Auth & Users ✅ (COMPLETE)
+- [x] JWT authentication (Access & Refresh tokens)
+- [x] RBAC (Role-Based Access Control)
+- [x] User module with CRUD operations
+- [x] Auth module (register, login, refresh, logout, me)
+- [x] Prisma schema for users and refresh tokens
+- [x] Password hashing with bcrypt
+- [x] JWT guards and decorators
 
-### Step 3: Core CRM Entities (PENDING)
-- Contacts module (multi-type)
-- Companies module
-- Deals module
-- Prisma schema for CRM entities
+### Step 3: Core CRM Entities ✅ (COMPLETE)
+- [x] Contacts module (multi-type: STUDENT, CORPORATE, INSTITUTION, INDIVIDUAL)
+- [x] Companies module (types: ENTERPRISE, SMB, STARTUP, EDUCATION)
+- [x] Deals module (Sales pipeline with 6 stages)
+- [x] Prisma schema for CRM entities with relationships
+- [x] Complete CRUD + filtering + pagination for all entities
 
 ### Step 4: Activities & Timeline (PENDING)
 - Activities module

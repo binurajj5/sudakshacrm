@@ -8,6 +8,9 @@ import { AppService } from './app.service';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ContactsModule } from './modules/contacts/contacts.module';
+import { CompaniesModule } from './modules/companies/companies.module';
+import { DealsModule } from './modules/deals/deals.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { UsersModule } from './modules/users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    ContactsModule,
+    CompaniesModule,
+    DealsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -77,7 +77,7 @@ export class UsersService {
   }
 
   async findOne(id: string, currentUser: User): Promise<UserResponseDto> {
-    const canViewAll = [Role.ADMIN, Role. MANAGER].includes(currentUser.role);
+    const canViewAll = ([Role.ADMIN, Role.MANAGER] as Role[]).includes(currentUser.role);
     
     if (!canViewAll && currentUser.id !== id) {
       throw new ForbiddenException('You can only view your own profile');
