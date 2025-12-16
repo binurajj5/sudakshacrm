@@ -21,7 +21,7 @@ import { JwtAuthGuard } from '../auth/gaurds/jwt-auth.guard';
 import { RolesGuard } from '../auth/gaurds/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { AuditLog } from '../../common/decorators/audit-log.decorator';
+import { AuditLog } from '../../common/interceptors/audit.interceptor';
 import { ApiPaginatedResponse } from '../../common/decorators/api-paginated-response.decorator';
 import { Role } from '@prisma/client';
 
@@ -34,13 +34,12 @@ export class CoursesController {
 
   @Post()
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('Course', 'CREATE')
+  @AuditLog({ entityType: 'Course', action: 'CREATE' })
   create(@Body() createCourseDto: CreateCourseDto, @CurrentUser() user: any) {
     return this.coursesService.create(createCourseDto, user.sub);
   }
 
   @Get()
-  @ApiPaginatedResponse()
   findAll(@Query() query: QueryCoursesDto) {
     return this.coursesService.findAll(query);
   }
@@ -52,14 +51,14 @@ export class CoursesController {
 
   @Patch(':id')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('Course', 'UPDATE')
+  @AuditLog({ entityType: 'Course', action: 'UPDATE' })
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.coursesService.update(id, updateCourseDto);
   }
 
   @Delete(':id')
   @Roles(Role.ADMIN)
-  @AuditLog('Course', 'DELETE')
+  @AuditLog({ entityType: 'Course', action: 'DELETE' })
   remove(@Param('id') id: string) {
     return this.coursesService.remove(id);
   }
@@ -68,7 +67,7 @@ export class CoursesController {
 
   @Post(':id/clone')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('Course', 'CLONE')
+  @AuditLog({ entityType: 'Course', action: 'CREATE' })
   cloneCourse(
     @Param('id') id: string,
     @Body() cloneDto: CloneCourseDto,
@@ -81,7 +80,7 @@ export class CoursesController {
 
   @Post(':courseId/topics')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseTopic', 'CREATE')
+  @AuditLog({ entityType: 'CourseTopic', action: 'CREATE' })
   createTopic(
     @Param('courseId') courseId: string,
     @Body() createTopicDto: CreateTopicDto,
@@ -91,7 +90,7 @@ export class CoursesController {
 
   @Patch('topics/:topicId')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseTopic', 'UPDATE')
+  @AuditLog({ entityType: 'CourseTopic', action: 'UPDATE' })
   updateTopic(
     @Param('topicId') topicId: string,
     @Body() updateTopicDto: UpdateTopicDto,
@@ -101,7 +100,7 @@ export class CoursesController {
 
   @Delete('topics/:topicId')
   @Roles(Role.ADMIN)
-  @AuditLog('CourseTopic', 'DELETE')
+  @AuditLog({ entityType: 'CourseTopic', action: 'DELETE' })
   removeTopic(@Param('topicId') topicId: string) {
     return this.coursesService.removeTopic(topicId);
   }
@@ -110,7 +109,7 @@ export class CoursesController {
 
   @Post('topics/:topicId/modules')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseModule', 'CREATE')
+  @AuditLog({ entityType: 'CourseModule', action: 'CREATE' })
   createModule(
     @Param('topicId') topicId: string,
     @Body() createModuleDto: CreateModuleDto,
@@ -120,7 +119,7 @@ export class CoursesController {
 
   @Patch('modules/:moduleId')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseModule', 'UPDATE')
+  @AuditLog({ entityType: 'CourseModule', action: 'UPDATE' })
   updateModule(
     @Param('moduleId') moduleId: string,
     @Body() updateModuleDto: UpdateModuleDto,
@@ -130,7 +129,7 @@ export class CoursesController {
 
   @Delete('modules/:moduleId')
   @Roles(Role.ADMIN)
-  @AuditLog('CourseModule', 'DELETE')
+  @AuditLog({ entityType: 'CourseModule', action: 'DELETE' })
   removeModule(@Param('moduleId') moduleId: string) {
     return this.coursesService.removeModule(moduleId);
   }
@@ -139,7 +138,7 @@ export class CoursesController {
 
   @Post('modules/:moduleId/lessons')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseLesson', 'CREATE')
+  @AuditLog({ entityType: 'CourseLesson', action: 'CREATE' })
   createLesson(
     @Param('moduleId') moduleId: string,
     @Body() createLessonDto: CreateLessonDto,
@@ -149,7 +148,7 @@ export class CoursesController {
 
   @Patch('lessons/:lessonId')
   @Roles(Role.ADMIN, Role.MANAGER)
-  @AuditLog('CourseLesson', 'UPDATE')
+  @AuditLog({ entityType: 'CourseLesson', action: 'UPDATE' })
   updateLesson(
     @Param('lessonId') lessonId: string,
     @Body() updateLessonDto: UpdateLessonDto,
@@ -159,7 +158,7 @@ export class CoursesController {
 
   @Delete('lessons/:lessonId')
   @Roles(Role.ADMIN)
-  @AuditLog('CourseLesson', 'DELETE')
+  @AuditLog({ entityType: 'CourseLesson', action: 'DELETE' })
   removeLesson(@Param('lessonId') lessonId: string) {
     return this.coursesService.removeLesson(lessonId);
   }

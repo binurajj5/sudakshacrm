@@ -34,7 +34,8 @@ async function bootstrap() {
   );
 
   // Graceful shutdown
-  app. enableShutdownHooks();
+  // Temporarily disabled due to Prisma disconnection issue
+  // app.enableShutdownHooks();
 
   const port = configService. get<number>('APP_PORT') || 4000;
   await app.listen(port, '0.0.0.0');
