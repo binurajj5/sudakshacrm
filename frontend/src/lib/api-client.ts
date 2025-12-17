@@ -83,11 +83,14 @@ apiClient.interceptors.response.use(
 // API helper wrapper
 const api = {
   get: async <T = unknown>(url: string) => {
+    console.log('API GET:', API_URL + url);
     const response = await apiClient.get(url);
     return response.data as T;
   },
   post: async <T = unknown>(url: string, data?: unknown) => {
+    console.log('API POST:', API_URL + url, { hasData: !!data });
     const response = await apiClient.post(url, data);
+    console.log('API POST response:', { status: response.status, hasData: !!response.data });
     return response.data as T;
   },
   patch: async <T = unknown>(url: string, data?: unknown) => {

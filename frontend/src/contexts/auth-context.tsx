@@ -49,7 +49,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: LoginRequest) => {
     try {
+      console.log('Login attempt starting...', { email: credentials.email });
       const response = await authService.login(credentials);
+      console.log('Login response received:', { hasUser: !!response.user, hasToken: !!response.accessToken });
       
       // Store tokens and user
       localStorage.setItem('accessToken', response.accessToken);
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       router.push('/dashboard');
     } catch (error) {
+      console.error('Login error caught:', error);
       const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Login failed';
       toast({
         title: 'Error',
