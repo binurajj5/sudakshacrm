@@ -39,9 +39,9 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await api.get<User[]>('/users');
-      setUsers(data);
-      setFilteredUsers(data);
+      const response = await api.get<{ data: User[]; total: number; page: number; limit: number }>('/users');
+      setUsers(response.data);
+      setFilteredUsers(response.data);
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       toast({
