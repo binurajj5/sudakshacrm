@@ -4,7 +4,8 @@ import { ProtectedRoute } from '@/components/auth/protected-route';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Users, FolderKanban, Activity, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { LogOut, Users, FolderKanban, CheckCircle2, Clock, AlertCircle, Building2, UserCircle } from 'lucide-react';
+import Link from 'next/link';
 
 function DashboardContent() {
   const { user, logout } = useAuth();
@@ -14,9 +15,9 @@ function DashboardContent() {
   };
 
   const quickActions = [
-    { icon: Users, label: 'Contacts', description: 'Manage your contacts', color: 'text-blue-500' },
-    { icon: FolderKanban, label: 'Deals', description: 'Track your deals', color: 'text-green-500' },
-    { icon: Activity, label: 'Activities', description: 'View recent activities', color: 'text-purple-500' },
+    { icon: Building2, label: 'Companies', description: 'Manage B2B accounts', color: 'text-blue-500', href: '/companies' },
+    { icon: Users, label: 'Contacts', description: 'Manage your contacts', color: 'text-green-500', href: '/contacts' },
+    { icon: FolderKanban, label: 'Deals', description: 'Track your deals', color: 'text-purple-500', href: '/deals' },
   ];
 
   const developmentProgress = [
@@ -33,11 +34,25 @@ function DashboardContent() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Sudaksha CRM</h1>
-            <p className="text-sm text-muted-foreground">Customer Relationship Management</p>
-          </div>
+          <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
+            <div>
+              <h1 className="text-2xl font-bold">Sudaksha CRM</h1>
+              <p className="text-sm text-muted-foreground">Customer Relationship Management</p>
+            </div>
+          </Link>
           <div className="flex items-center gap-4">
+            <Link href="/users">
+              <Button variant="ghost" size="sm">
+                <UserCircle className="mr-2 h-4 w-4" />
+                Users
+              </Button>
+            </Link>
+            <Link href="/companies">
+              <Button variant="ghost" size="sm">
+                <Building2 className="mr-2 h-4 w-4" />
+                Companies
+              </Button>
+            </Link>
             <div className="text-right">
               <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-muted-foreground">{user?.email}</p>
@@ -68,17 +83,19 @@ function DashboardContent() {
           <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {quickActions.map((action) => (
-              <Card key={action.label} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <action.icon className={`h-8 w-8 ${action.color}`} />
-                    <div>
-                      <CardTitle>{action.label}</CardTitle>
-                      <CardDescription>{action.description}</CardDescription>
+              <Link key={action.label} href={action.href}>
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <action.icon className={`h-8 w-8 ${action.color}`} />
+                      <div>
+                        <CardTitle>{action.label}</CardTitle>
+                        <CardDescription>{action.description}</CardDescription>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-              </Card>
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

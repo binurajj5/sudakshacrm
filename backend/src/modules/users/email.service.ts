@@ -5,11 +5,12 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter;
+  private transporterPromise: Promise<void>;
 
   constructor(private configService: ConfigService) {
     // For now, create a test account using ethereal email (development)
     // In production, you would use real SMTP credentials
-    this.initializeTransporter();
+    this.transporterPromise = this.initializeTransporter();
   }
 
   private async initializeTransporter() {
@@ -29,6 +30,7 @@ export class EmailService {
             pass: this.configService.get('SMTP_PASS'),
           },
         });
+        console.log('📧 Email service using configured SMTP');
       } else {
         // Use ethereal email for testing
         const testAccount = await nodemailer.createTestAccount();
@@ -45,6 +47,14 @@ export class EmailService {
       }
     } catch (error) {
       console.error('Failed to initialize email transporter:', error);
+      throw error;
+    }
+  }
+
+  private async ensureTransporter() {
+    await this.transporterPromise;
+    if (!this.transporter) {
+      throw new Error('Email transporter not initialized');
     }
   }
 
@@ -54,6 +64,9 @@ export class EmailService {
     password: string,
   ): Promise<{ success: boolean; previewUrl?: string }> {
     try {
+      // Ensure transporter is initialized before sending
+      await this.ensureTransporter();
+      
       const info = await this.transporter.sendMail({
         from: '"Sudaksha CRM" <noreply@sudaksha.com>',
         to: email,
