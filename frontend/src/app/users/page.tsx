@@ -43,9 +43,10 @@ export default function UsersPage() {
       setUsers(data);
       setFilteredUsers(data);
     } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to fetch users',
+        description: err.response?.data?.message || 'Failed to fetch users',
         variant: 'destructive',
       });
     } finally {

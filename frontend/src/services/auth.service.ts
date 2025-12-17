@@ -1,4 +1,4 @@
-import apiClient from '@/lib/api-client';
+import { api } from '@/lib/api-client';
 import { LoginRequest, RegisterRequest, AuthResponse, User } from '@/types/auth';
 
 export const authService = {
@@ -6,38 +6,34 @@ export const authService = {
    * Login user with credentials
    */
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
-    return response.data;
+    return await api.post<AuthResponse>('/auth/login', credentials);
   },
 
   /**
    * Register new user
    */
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
-    return response.data;
+    return await api.post<AuthResponse>('/auth/register', data);
   },
 
   /**
    * Logout current user
    */
   async logout(): Promise<void> {
-    await apiClient.post('/auth/logout');
+    await api.post('/auth/logout');
   },
 
   /**
    * Get current user profile
    */
   async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<User>('/auth/me');
-    return response.data;
+    return await api.get<User>('/auth/me');
   },
 
   /**
    * Refresh access token
    */
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const response = await apiClient.post('/auth/refresh', { refreshToken });
-    return response.data;
+    return await api.post('/auth/refresh', { refreshToken });
   },
 };
