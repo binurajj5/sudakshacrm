@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail, User, Briefcase, Shield, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { apiClient } from '@/lib/api-client';
+import { api } from '@/lib/api-client';
 
 interface CreateUserDialogProps {
   open: boolean;
@@ -52,7 +52,7 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
     setLoading(true);
 
     try {
-      const response = await apiClient.post('/users', formData);
+      const response = await api.post<{ emailSent?: boolean; emailPreviewUrl?: string }>('/users', formData);
       
       toast({
         title: 'User Created Successfully',
@@ -77,10 +77,11 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
 
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to create user. Please try again.',
+        description: err.response?.data?.message || 'Failed to create user. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -240,7 +241,7 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
               <p className="text-sm text-blue-900">
                 <strong>Email Notification:</strong><br />
-                A welcome email with login credentials will be sent to the user's email address.
+                A welcome email with login credentials will be sent to the user&apos;s email address.
                 They will be prompted to change their password on first login.
               </p>
             </div>

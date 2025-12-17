@@ -80,4 +80,29 @@ apiClient.interceptors.response.use(
   }
 );
 
+// API helper wrapper
+const api = {
+  get: async <T = unknown>(url: string) => {
+    const response = await apiClient.get(url);
+    return response.data as T;
+  },
+  post: async <T = unknown>(url: string, data?: unknown) => {
+    const response = await apiClient.post(url, data);
+    return response.data as T;
+  },
+  patch: async <T = unknown>(url: string, data?: unknown) => {
+    const response = await apiClient.patch(url, data);
+    return response.data as T;
+  },
+  put: async <T = unknown>(url: string, data?: unknown) => {
+    const response = await apiClient.put(url, data);
+    return response.data as T;
+  },
+  delete: async <T = unknown>(url: string) => {
+    const response = await apiClient.delete(url);
+    return response.data as T;
+  },
+};
+
 export default apiClient;
+export { apiClient, api };

@@ -7,7 +7,7 @@ import { CreateUserDialog } from '@/components/users/create-user-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, UserCog, Shield, Clock, Plus, Search } from 'lucide-react';
-import { apiClient } from '@/lib/api-client';
+import { api } from '@/lib/api-client';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 
@@ -39,10 +39,10 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await apiClient.get('/users');
+      const data = await api.get<User[]>('/users');
       setUsers(data);
       setFilteredUsers(data);
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
         description: error.response?.data?.message || 'Failed to fetch users',
