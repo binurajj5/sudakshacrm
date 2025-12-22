@@ -10,6 +10,8 @@ import { Users, UserCog, Shield, Clock, Plus, Search } from 'lucide-react';
 import { api } from '@/lib/api-client';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
+import { AppHeader } from '@/components/layout/app-header';
+import { ProtectedRoute } from '@/components/auth/protected-route';
 
 interface User {
   id: string;
@@ -28,7 +30,7 @@ interface User {
   };
 }
 
-export default function UsersPage() {
+function UsersPageContent() {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -97,7 +99,9 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <>
+      <AppHeader />
+      <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -263,6 +267,15 @@ export default function UsersPage() {
         onOpenChange={setIsCreateDialogOpen}
         onSuccess={fetchUsers}
       />
-    </div>
+      </div>
+    </>
+  );
+}
+
+export default function UsersPage() {
+  return (
+    <ProtectedRoute>
+      <UsersPageContent />
+    </ProtectedRoute>
   );
 }

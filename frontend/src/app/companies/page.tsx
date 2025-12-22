@@ -25,8 +25,10 @@ import { companyService } from '@/services/company.service';
 import { Company, CompanyType, CompanyStatus } from '@/types/company';
 import { Building2, Search, Plus, Eye, Pencil, Trash2 } from 'lucide-react';
 import { CreateCompanyDialog } from '@/components/companies/create-company-dialog';
+import { AppHeader } from '@/components/layout/app-header';
+import { ProtectedRoute } from '@/components/auth/protected-route';
 
-export default function CompaniesPage() {
+function CompaniesPageContent() {
   const router = useRouter();
   const { toast } = useToast();
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -116,16 +118,21 @@ export default function CompaniesPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-10">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading companies...</div>
+      <>
+        <AppHeader />
+        <div className="container mx-auto py-10">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-lg">Loading companies...</div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <>
+      <AppHeader />
+      <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -274,6 +281,15 @@ export default function CompaniesPage() {
         onOpenChange={setIsCreateDialogOpen}
         onSuccess={fetchCompanies}
       />
-    </div>
+      </div>
+    </>
+  );
+}
+
+export default function CompaniesPage() {
+  return (
+    <ProtectedRoute>
+      <CompaniesPageContent />
+    </ProtectedRoute>
   );
 }
